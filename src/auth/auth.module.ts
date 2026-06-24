@@ -8,7 +8,7 @@ import {SessionsPosteService} from '../sessions-poste/sessions-poste.service';
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'secret_key_cafe_mistral',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '8h' },
     }),
   ],
