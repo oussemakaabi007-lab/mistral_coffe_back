@@ -2,7 +2,7 @@ import { Injectable, BadRequestException, NotFoundException } from '@nestjs/comm
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUtilisateurDto } from './dto/create-utilisateur.dto';
 import { UpdateUtilisateurDto } from './dto/update-utilisateur.dto';
-import { LogsService } from '../logs/logs.service'; // Adjusted to match your log service file name
+import { LogsService } from '../logs/logs.service';
 import * as bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';
 
@@ -10,7 +10,7 @@ import { Prisma } from '@prisma/client';
 export class UtilisateursService {
   constructor(
     private prisma: PrismaService,
-    private logsService: LogsService, // 🚀 Injected your logs service safely
+    private logsService: LogsService,
   ) {}
 
   async create(dto: CreateUtilisateurDto, utilisateurId?: number) {
@@ -32,8 +32,6 @@ export class UtilisateursService {
         role: dto.role,
       },
     });
-
-    // 🚀 LOG: User Account Created
     await this.logsService.creerLog(
       'UTILISATEUR_CREATION',
       `Création d'un nouveau compte utilisateur : '${user.nomUtilisateur}' (Rôle: ${user.role}, ID: ${user.id}).`,
