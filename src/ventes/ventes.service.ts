@@ -12,49 +12,48 @@ export class VentesService {
   ) {}
 
   async obtenirSaisieParTypePoste(type: TypePoste) {
-    const aujourdhui = new Date();
-    aujourdhui.setHours(0, 0, 0, 0);
+  const aujourdhui = new Date();
+  aujourdhui.setHours(0, 0, 0, 0);
 
-    const sessions = await this.prisma.sessionPoste.findMany({
-      where: {
-        type: type,
-        dateOuverture: { gte: aujourdhui },
-      },
-      include: {
-        ventes: {
-          include: { 
-            lignes: true,
-            utilisateur: true 
-          },
+  const sessions = await this.prisma.sessionPoste.findMany({
+    where: {
+      type: type,
+      dateOuverture: { gte: aujourdhui },
+    },
+    include: {
+      ventes: {
+        include: { 
+          lignes: true,
+          utilisateur: true 
         },
       },
-    });
+    },
+  });
 
-    const serveursMap: Record<number, number> = {};
-    const comptoirMap: Record<number, number> = {};
+  const serveursMap: Record<number, number> = {};
+  const comptoirMap: Record<number, number> = {};
     
-    for (const session of sessions) {
-      for (const sale of session.ventes) {
-        for (const ligne of sale.lignes) {
-          const estComptoir = 
-            sale.utilisateur?.role === Role.ADMIN || 
-            sale.utilisateur?.role === Role.GERANT || 
-            sale.utilisateurId === session.utilisateurId;
-
-          if (estComptoir) {
-            comptoirMap[ligne.produitId] = (comptoirMap[ligne.produitId] || 0) + ligne.quantite;
-          } else {
-            serveursMap[ligne.produitId] = (serveursMap[ligne.produitId] || 0) + ligne.quantite;
-          }
+  for (const session of sessions) {
+    for (const sale of session.ventes) {
+      for (const ligne of sale.lignes) {
+        const isRoleComptoir = sale.utilisateur?.role === Role.ADMIN || 
+                               sale.utilisateur?.role === Role.GERANT;
+        
+        const isSessionOwner = sale.utilisateurId === session.utilisateurId;
+        if (isRoleComptoir && !isSessionOwner) {
+          comptoirMap[ligne.produitId] = (comptoirMap[ligne.produitId] || 0) + ligne.quantite;
+        } else {
+          serveursMap[ligne.produitId] = (serveursMap[ligne.produitId] || 0) + ligne.quantite;
         }
       }
     }
-
-    return {
-      serveurs: serveursMap,
-      comptoir: comptoirMap,
-    };
   }
+
+  return {
+    serveurs: serveursMap,
+    comptoir: comptoirMap,
+  };
+}
 
   async sauvegarderSaisiePoste(userId: number, dto: EnregistrerSaisieDto) {
     const aujourdhui = new Date();
