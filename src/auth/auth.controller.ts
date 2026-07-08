@@ -23,4 +23,10 @@ export class AuthController {
     const utilisateurId = req.user['sub']; 
     return this.authService.logout(utilisateurId);
   }
+  @Post("logout-expired")
+  @HttpCode(HttpStatus.OK)
+  async logoutExpired(@Body() body: { utilisateurId: number }) {
+    const { utilisateurId } = body;
+    return this.authService.logout(utilisateurId);
+  }
 }
