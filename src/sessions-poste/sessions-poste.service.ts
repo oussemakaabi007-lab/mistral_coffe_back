@@ -83,7 +83,12 @@ export class SessionsPosteService {
       orderBy: { dateOuverture: 'desc' },
     });
   }
-
+  async getmyactive(utilisateurId: number) {
+    const session = await this.prisma.sessionPoste.findFirst({
+      where: { utilisateurId, statut: 'OUVERT' },
+    });
+    return session;
+  }
   async fermer(id: number, dto: FermerSessionDto) {
     const session = await this.prisma.sessionPoste.findUnique({
       where: { id: id },

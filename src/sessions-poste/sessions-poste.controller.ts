@@ -27,7 +27,11 @@ export class SessionsPosteController {
   findAll() {
     return this.sessionsPosteService.findAll();
   }
-
+  @Get('my_active')
+  getMyActive(@Request() req) {
+    const userId = req.user.sub;
+    return this.sessionsPosteService.getmyactive(userId);
+  }
   @Patch(':id/cloturer')
   fermer(@Param('id', ParseIntPipe) id: number, @Body() dto: FermerSessionDto) {
     return this.sessionsPosteService.fermer(id, dto);
