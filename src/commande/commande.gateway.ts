@@ -23,6 +23,7 @@ export class CommandeGateway implements OnGatewayConnection, OnGatewayDisconnect
     console.log(`Client disconnected : ${client.id}`);
   }
   notifyNewOrder(orderData: any) {
+    console.log('Notifying new order:');
     this.server.emit('newOrder', {
       message: 'Une nouvelle commande a été passée !',
       data: orderData,
