@@ -127,6 +127,19 @@ export class VentesService {
       }
       let user = await tx.utilisateur.findUnique({ where: { id: userId } });
       if(user?.role === Role.SERVEUR) {
+        const message = itemsToInsert.map(item => {
+      const prod = produits.find(p => p.id === item.produitId);
+      return `${prod ? prod.nom : 'Produit inconnu'} x ${item.quantite}`;
+    }).join('\n'); 
+
+  
+  this.commandeGateway.notifyNewOrder({
+    message: message,
+    data: {
+      venteId: nouvelleVente?.id,
+      lignes: lignesData,
+    }
+  });
         this.commandeGateway.notifyNewOrder({
           data: {
             venteId: lignesData,
