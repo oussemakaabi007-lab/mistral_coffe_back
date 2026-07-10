@@ -217,7 +217,7 @@ export class AnalysesService {
       include: {
         utilisateur: { select: { nomUtilisateur: true } },
         lignes: { include: { produit: { select: { nom: true } } } },
-        sessions_poste: { select: { id: true } }
+        sessionsPoste: { select: { id: true } }
       },
       orderBy: { dateVente: 'desc' },
     });
