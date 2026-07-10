@@ -5,4 +5,4 @@ import { CommandeGateway } from './commande.gateway';
   providers: [CommandeGateway],
   exports: [CommandeGateway],
 })
-export class OrdersModule {}
+export class CommandeModule {}
