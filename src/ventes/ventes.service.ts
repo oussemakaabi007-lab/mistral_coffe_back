@@ -39,8 +39,7 @@ export class VentesService {
         const isRoleComptoir = sale.utilisateur?.role === Role.ADMIN || 
                                sale.utilisateur?.role === Role.GERANT;
         
-        const isSessionOwner = sale.utilisateurId === session.utilisateurId;
-        if (isRoleComptoir && !isSessionOwner) {
+        if (isRoleComptoir) {
           comptoirMap[ligne.produitId] = (comptoirMap[ligne.produitId] || 0) + ligne.quantite;
         } else {
           serveursMap[ligne.produitId] = (serveursMap[ligne.produitId] || 0) + ligne.quantite;
