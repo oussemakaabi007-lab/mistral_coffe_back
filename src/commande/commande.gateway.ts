@@ -9,7 +9,10 @@ import { Server, Socket } from 'socket.io';
 @WebSocketGateway({
   cors: {
     origin: '*',
+    methods: ["GET", "POST"],
+    credentials: true,
   },
+  transports: ['websocket'],
 })
 export class CommandeGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
