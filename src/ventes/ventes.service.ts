@@ -144,9 +144,8 @@ export class VentesService {
       let user = await tx.utilisateur.findUnique({ where: { id: userId } });
   if (user?.role === Role.SERVEUR) {
     this.commandeGateway.notifyNewOrder({
-      message: message,
       data: {
-        venteId: v.id,
+        msg:message,
       }
     });
   }
