@@ -3,12 +3,13 @@ import { PrismaService } from '../prisma/prisma.service';
 import { TypePoste, Role } from '@prisma/client';
 import { EnregistrerSaisieDto } from './dto/enregistrer-saisie.dto';
 import { LogsService } from '../logs/logs.service';
-
+import { CommandeGateway } from '../commande/commande.gateway';
 @Injectable()
 export class VentesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly logsService: LogsService,
+    private readonly commandeGateway: CommandeGateway,
   ) {}
 
   async obtenirSaisieParTypePoste(type: TypePoste) {
@@ -123,6 +124,14 @@ export class VentesService {
             }
           });
         }
+      }
+      let user = await tx.utilisateur.findUnique({ where: { id: userId } });
+      if(user?.role === Role.SERVEUR) {
+        this.commandeGateway.notifyNewOrder({
+          data: {
+            venteId: lignesData,
+          }
+        });
       }
       return await tx.vente.create({
         data: {
