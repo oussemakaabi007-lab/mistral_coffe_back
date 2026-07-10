@@ -217,7 +217,7 @@ export class AnalysesService {
       include: {
         utilisateur: { select: { nomUtilisateur: true } },
         lignes: { include: { produit: { select: { nom: true } } } },
-        sessionsPoste: { select: { id: true } }
+        sessionPoste: { select: { id: true } }
       },
       orderBy: { dateVente: 'desc' },
     });
@@ -235,7 +235,7 @@ export class AnalysesService {
         serveur: v.utilisateur?.nomUtilisateur || 'Inconnu',
         montant: `${Number(v.montantTotal).toFixed(3)} DT`,
         statut: v.statut,
-        posteId: v.sessionsPoste?.id || null,
+        posteId: v.sessionPoste?.id || null,
         details: v.lignes.map(l => `${l.quantite}x ${l.produit.nom}`).join(', '),
       })),
       logs: logs.map(l => ({
