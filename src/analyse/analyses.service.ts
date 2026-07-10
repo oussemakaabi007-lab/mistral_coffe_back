@@ -215,7 +215,8 @@ export class AnalysesService {
       where: { dateVente: { gte: startOfDay, lte: endOfDay } },
       include: {
         utilisateur: { select: { nomUtilisateur: true } },
-        lignes: { include: { produit: { select: { nom: true } } } }
+        lignes: { include: { produit: { select: { nom: true } } } },
+        posteid: { select: { sessionPosteId: true } }
       },
       orderBy: { dateVente: 'desc' },
     });
