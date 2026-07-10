@@ -234,6 +234,7 @@ export class AnalysesService {
         serveur: v.utilisateur?.nomUtilisateur || 'Inconnu',
         montant: `${Number(v.montantTotal).toFixed(3)} DT`,
         statut: v.statut,
+        posteId: v.posteid?.sessionPosteId || null,
         details: v.lignes.map(l => `${l.quantite}x ${l.produit.nom}`).join(', '),
       })),
       logs: logs.map(l => ({
