@@ -60,6 +60,7 @@ export class VentesService {
     aujourdhui.setHours(0, 0, 0, 0);
     let session = await this.prisma.sessionPoste.findFirst({
       where: {
+        utilisateurId: userId,
         type: dto.typePoste,
         dateOuverture: { gte: aujourdhui },
         statut: 'OUVERT',
