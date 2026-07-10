@@ -103,6 +103,11 @@ export class VentesService {
         quantite: item.quantite,
       };
     });
+    const message = itemsToInsert.map(item => {
+    const prod = produits.find(p => p.id === item.produitId);
+    return `${prod ? prod.nom : 'Produit inconnu'} x ${item.quantite}`;
+  })
+  .join('\n');
     const nouvelleVente = await this.prisma.$transaction(async (tx) => {
       for (const item of itemsToInsert) {
         const prod = produits.find(p => p.id === item.produitId);
@@ -125,28 +130,7 @@ export class VentesService {
           });
         }
       }
-      let user = await tx.utilisateur.findUnique({ where: { id: userId } });
-      if(user?.role === Role.SERVEUR) {
-        const message = itemsToInsert.map(item => {
-      const prod = produits.find(p => p.id === item.produitId);
-      return `${prod ? prod.nom : 'Produit inconnu'} x ${item.quantite}`;
-    }).join('\n'); 
-
-  
-  this.commandeGateway.notifyNewOrder({
-    message: message,
-    data: {
-      venteId: nouvelleVente?.id,
-      lignes: lignesData,
-    }
-  });
-        this.commandeGateway.notifyNewOrder({
-          data: {
-            venteId: lignesData,
-          }
-        });
-      }
-      return await tx.vente.create({
+      const v=await tx.vente.create({
         data: {
           sessionPosteId: session.id,
           utilisateurId: userId,
@@ -157,6 +141,16 @@ export class VentesService {
           },
         },
       });
+      let user = await tx.utilisateur.findUnique({ where: { id: userId } });
+  if (user?.role === Role.SERVEUR) {
+    this.commandeGateway.notifyNewOrder({
+      message: message,
+      data: {
+        venteId: v.id,
+      }
+    });
+  }
+  return v;
     });
 
     await this.logsService.creerLog(
@@ -164,7 +158,7 @@ export class VentesService {
       `Vente directe (#${nouvelleVente.id}) validée au comptoir. Recette: ${calculatedTotal.toFixed(3)} DT. Ingrédients déduits avec succès.`,
       userId,
     );
-
+    
     return { success: true };
   }
 
