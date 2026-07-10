@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { SessionsPosteController } from 'src/sessions-poste/sessions-poste.controller';
 
 @Injectable()
 export class AnalysesService {
@@ -216,7 +217,7 @@ export class AnalysesService {
       include: {
         utilisateur: { select: { nomUtilisateur: true } },
         lignes: { include: { produit: { select: { nom: true } } } },
-        posteid: { select: { sessionPosteId: true } }
+        sessions_poste: { select: { id: true } }
       },
       orderBy: { dateVente: 'desc' },
     });
