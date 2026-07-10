@@ -16,11 +16,11 @@ export class CommandeGateway implements OnGatewayConnection, OnGatewayDisconnect
   server!: Server;
 
   handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
+    console.log(`Client connected : ${client.id}`);
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
+    console.log(`Client disconnected : ${client.id}`);
   }
   notifyNewOrder(orderData: any) {
     this.server.emit('newOrder', {
